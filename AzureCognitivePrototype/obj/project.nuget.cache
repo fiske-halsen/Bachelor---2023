@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "dgSpecHash": "95F/rEzMG25DJEVj/Dj9SWi5Fhy4k/85jOqB58T6dpOatjSZQ+zGLehqfVUrOLfpf/KkbimjEjlVBL5rBTspqw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\AzureCognitivePrototype\\AzureCognitivePrototype.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\phia\\.nuget\\packages\\azure.core\\1.31.0\\azure.core.1.31.0.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\azure.storage.blobs\\12.16.0\\azure.storage.blobs.12.16.0.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\azure.storage.common\\12.15.0\\azure.storage.common.12.15.0.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\mediatoolkit\\1.1.0.1\\mediatoolkit.1.1.0.1.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\microsoft.cognitiveservices.speech\\1.27.0\\microsoft.cognitiveservices.speech.1.27.0.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\naudio.core\\2.0.0\\naudio.core.2.0.0.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\naudio.lame\\2.0.1\\naudio.lame.2.0.1.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\system.diagnostics.diagnosticsource\\4.6.0\\system.diagnostics.diagnosticsource.4.6.0.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\system.io.hashing\\6.0.0\\system.io.hashing.6.0.0.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\system.memory.data\\1.0.2\\system.memory.data.1.0.2.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\system.text.encodings.web\\4.7.2\\system.text.encodings.web.4.7.2.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
+    "C:\\Users\\phia\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'MediaToolkit 1.1.0.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
+      "libraryId": "MediaToolkit",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
+}

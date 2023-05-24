@@ -1,0 +1,234 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\PhoneNotificationService.Tests\\PhoneNotificationService.Tests.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.PhoneNotification\\EMSuite.PhoneNotification.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.PhoneNotification\\EMSuite.PhoneNotification.csproj",
+        "projectName": "EMSuite.PhoneNotification",
+        "projectPath": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.PhoneNotification\\EMSuite.PhoneNotification.csproj",
+        "packagesPath": "C:\\Users\\phia\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.PhoneNotification\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.2\\Components\\Offline Packages",
+          "C:\\Program Files\\DevExpress 22.2\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\phia\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 22.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.2\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\DevExpress 22.2\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Users\\phia\\Desktop\\NuGetPackages": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.devexpress.com/ZbK5njfbJco11T9pcL4F9qT4onxMvHTKRsoT9ZqT5E1PKrEhuL/api": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.Common.TransferData\\EMSuite.Common.csproj": {
+                "projectPath": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.Common.TransferData\\EMSuite.Common.csproj"
+              },
+              "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.DataAccess\\EMSuite.DataAccess.csproj": {
+                "projectPath": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.DataAccess\\EMSuite.DataAccess.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.16.0, )"
+            },
+            "IdentityServer4": {
+              "target": "Package",
+              "version": "[4.1.2, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Client": {
+              "target": "Package",
+              "version": "[6.0.16, )"
+            },
+            "Microsoft.CognitiveServices.Speech": {
+              "target": "Package",
+              "version": "[1.27.0, )"
+            },
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[6.1.0, )"
+            },
+            "Serilog.Sinks.MSSqlServer": {
+              "target": "Package",
+              "version": "[6.3.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.2.3, )"
+            },
+            "Twilio": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
+            "Twilio.AspNet.Core": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\PhoneNotificationService.Tests\\PhoneNotificationService.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\PhoneNotificationService.Tests\\PhoneNotificationService.Tests.csproj",
+        "projectName": "PhoneNotificationService.Tests",
+        "projectPath": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\PhoneNotificationService.Tests\\PhoneNotificationService.Tests.csproj",
+        "packagesPath": "C:\\Users\\phia\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\PhoneNotificationService.Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.2\\Components\\Offline Packages",
+          "C:\\Program Files\\DevExpress 22.2\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\phia\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 22.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.2\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\DevExpress 22.2\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Users\\phia\\Desktop\\NuGetPackages": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.devexpress.com/ZbK5njfbJco11T9pcL4F9qT4onxMvHTKRsoT9ZqT5E1PKrEhuL/api": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.PhoneNotification\\EMSuite.PhoneNotification.csproj": {
+                "projectPath": "C:\\Users\\phia\\Desktop\\EMSuite - Bachelor\\EMSuite.PhoneNotification\\EMSuite.PhoneNotification.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[6.11.0, )"
+            },
+            "Microsoft.AspNet.SignalR.Core": {
+              "target": "Package",
+              "version": "[2.4.3, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.3.2, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.18.4, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.13.3, )"
+            },
+            "NUnit.Analyzers": {
+              "target": "Package",
+              "version": "[3.5.0, )"
+            },
+            "NUnit3TestAdapter": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
