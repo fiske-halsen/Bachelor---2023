@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
-namespace EMSuite.Hardware.Api.Mocked.Controllers
+namespace EMSuite.Mocked.Controllers
+{
 {
     public class AlarmTemplateController : Controller
     {

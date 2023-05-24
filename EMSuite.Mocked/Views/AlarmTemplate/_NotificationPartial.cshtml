@@ -1,0 +1,150 @@
+﻿@model ThresholdNotificationViewModel
+
+@inject IViewLocalizer Localizer
+@inject IAuthorizationService Auth
+
+@{
+    var canConfigure = (await Auth.AuthorizeAsync(User, Permissions.AlarmTemplate.Configure)).Succeeded;
+
+    string displaySpecific = ""; 
+    string displayAll = "";
+
+    if (Model.NotificationMode == NotificationMode.LocationSpecific)
+    {
+        displayAll = "d-none";
+    }
+    else
+    {
+        displaySpecific = "d-none";
+    }
+}
+
+<div class="row">
+    <div class="col">
+        <h6>@Localizer["LocationMode"].Value</h6>
+        @(Html.DevExtreme()
+                .Switch()
+                .ID("toggleLocationSwitch")
+                .Value(Model.NotificationMode == NotificationMode.LocationSpecific)
+                .Width(80)
+                .Height(29)
+                .SwitchedOnText(@Localizer["On"].Value)
+                .SwitchedOffText(@Localizer["Off"].Value)
+                .OnValueChanged("toggleLocationMode")
+        )
+    </div>
+</div>
+
+<div class="row mt-1">
+    <div class="col location-all @displayAll">
+        @(Html.DevExtreme().List()
+            .ID("notificationList")
+            .Disabled(!canConfigure)
+            .SearchEnabled(true)
+            .SearchExpr("Name")
+            .OnContentReady("initialiseCheckList")
+            .SelectionMode(ListSelectionMode.Multiple)
+            .ShowSelectionControls(canConfigure)
+            .DataSource(ds => ds.Mvc().Controller("AlarmTemplate").LoadAction("NotificationUsers").LoadParams(new { id = Model.ThresholdId }))
+            .ItemTemplate(
+                        @<text>
+                            [% if ( FullName ) { %]
+                <span>[%- FullName %]</span><span> ([%- Name %] - <a href="mailto:[%- PhoneNumber %]">[%- PhoneNumber %]</a>)</span>
+                            [% } else { %]
+                <span>[%- Name %]</span><span> (<a href="mailto:[%- PhoneNumber %]">[%- PhoneNumber %]</a>)</span>
+                            [% } %]
+                        </text>)
+        )
+    </div>
+    <div class="col location-specific @displaySpecific">
+        @(Html.DevExtreme().TreeView()
+            .ID("notificationTree")
+            .DataStructure(TreeViewDataStructure.Plain)
+            .DataSource(d => d.Mvc().Controller("AlarmTemplate").LoadAction("NotificationNodes").LoadParams(new { id = Model.ThresholdId }))
+            .Disabled(!canConfigure)
+            .SearchEnabled(true)
+            .DisplayExpr("Name")
+            .KeyExpr("NodeID")
+            .ParentIdExpr("Parent")
+            .SelectedExpr("Selected")
+            .ExpandedExpr("Expanded")
+            .DisabledExpr("Disabled")
+            .OnItemClick("OnTreeViewItemClick")
+            .OnItemRendered("OnTreeViewItemRendered")
+            .ExpandNodesRecursive(true)
+            .SelectionMode(NavSelectionMode.Multiple)
+            .ShowCheckBoxesMode(canConfigure ? TreeViewCheckBoxMode.Normal : TreeViewCheckBoxMode.None) //SelectAll does not work with disabled Rows
+            .SelectByClick(true)
+            .SearchEnabled(true)
+        )
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col">
+        <h6>Round robin interval</h6>
+    </div>
+</div>
+
+<!-- For round robin -->
+<div class="row mt-1">
+    <div class="col-4">
+        @(Html.DevExtreme().NumberBox()
+            .ID("roundRobinHour")
+            .Value(0)
+            .Placeholder("")
+            .ShowSpinButtons(true)
+            .Max(23)
+            .Min(0)
+            .Format("00")
+            .Width("100%")
+            )
+    </div>
+    <div class="col-4">
+        @(Html.DevExtreme().NumberBox()
+            .ID("roundRobinMin")
+            .Value(15)
+            .Placeholder("")
+            .ShowSpinButtons(true)
+            .Max(59)
+            .Min(1)
+            .Format("00")
+            .Width("100%")
+            )
+    </div>
+    <div class="col-4">
+        @(Html.DevExtreme().NumberBox()
+            .ID("roundRobinSec")
+            .Value(0)
+            .Placeholder("")
+            .ShowSpinButtons(true)
+            .Max(59)
+            .Min(0)
+            .Format("00")
+            .Width("100%")
+            )
+    </div>
+</div>
+
+<!-- Title for the dropdown box -->
+<div class="row mt-3">
+    <div class="col">
+        <h6>Text-to-speech gender voice</h6>
+    </div>
+</div>
+
+<!-- Dropdown box with Male and Female options -->
+<div class="row mt-1">
+    <div class="col">
+        @(Html.DevExtreme().SelectBox()
+            .ID("genderSelectBox")
+            .DataSource(new[] { new { value = 1, text = "Male" }, new { value = 2, text = "Female" } })
+            .ValueExpr("value")
+            .DisplayExpr("text")
+            .Placeholder("Select Gender")
+            .Width("100%")
+            )
+    </div>
+</div>
+
+

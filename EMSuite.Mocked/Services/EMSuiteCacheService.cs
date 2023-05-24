@@ -1,6 +1,7 @@
 ﻿namespace EMSuite.Mocked.Services
 {
-    public class EMSuiteCacheService
+    public static class EMSuiteCacheService
     {
+        public static string PhoneNotificationService { get; set; }
     }
 }

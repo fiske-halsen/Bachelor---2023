@@ -1,0 +1,382 @@
+﻿@using EMSuite.Common
+@using System.Linq
+@using EMSuite.Common.ViewModels
+
+@model ThresholdTemplateViewModel
+
+@inject IViewLocalizer Localizer
+@inject IAuthorizationService Auth
+
+@{
+    var canConfigure = (await Auth.AuthorizeAsync(User, Permissions.AlarmTemplate.Configure)).Succeeded;
+
+    var hysteresisMessages = "{" +
+            $"   success: '{Localizer["TemplateOptionsSuccess"].SafeValue()}'," +
+            $"   failure:  '{Localizer["TemplateOptionsFailure"].SafeValue()}' " +
+            "}";
+}
+
+<div class="mt-2 mb-2">
+    <div class="mb-2">
+        @(Html.DevExtreme().Toolbar()
+                .ID("limitOptionsToolbar")
+                .Items(items =>
+                {
+                    items.Add().Text(Localizer["LimitOptionsTitle"].Value).Location(ToolbarItemLocation.Before);
+                }))
+    </div>
+
+    @(Html.DevExtreme().Form<ThresholdOptionsViewModel>()
+            .ID("thresholdOptionsForm")
+            .ColCount(1)
+            .FormData(new ThresholdOptionsViewModel())
+            .LabelLocation(FormLabelLocation.Left)
+            .ShowColonAfterLabel(true)
+            .ReadOnly(!canConfigure)
+            .Items(items =>
+            {
+            items.AddSimpleFor(m => m.HysteresisBand)
+                .Label(l => {
+                l.Text(new JS($"'{Localizer["Hysteresis"].Value} (' + getTemplateUnits() + ')'"));
+            })
+            .IsRequired(true)
+            .Template(
+                @<text>
+                    <div class="edit-container">
+                        <div id="hysteresisHelp" class="form-item-help">
+                            <partial name="Icons/Help" />
+                                @(Html.DevExtreme().Tooltip()
+                            .Target("#hysteresisHelp")
+                            .ShowEvent("mouseenter")
+                            .HideEvent("mouseleave")
+                            .Position(Position.Right)
+                            .ContentTemplate(Localizer["HysteresisHelp"].Value))
+                        </div>
+                        <div>
+                                @(Html.DevExtreme().NumberBox()
+                            .ReadOnly(!canConfigure)
+                            .ID("templateHysteresis")
+                            .ShowSpinButtons(true)
+                            .Step(0.1)
+                            .Min(0)
+                            .OnValueChanged("function(e) { hysteresisChange(e); }"))
+                        </div>
+                        <span class="ml-1 mr-1">
+                                @(Html.DevExtreme().Button()
+                                    .ID("SaveLimitSettings")
+                                    .Type(ButtonType.Default)
+                                    .Text(Localizer["Save"].Value)
+                                    .Visible(canConfigure)
+                                    .Disabled(true)
+                                    .OnClick($"function(e) {{ return saveThresholdOptions({Model.TemplateId}, {hysteresisMessages}); }}")
+                                    )
+                            </span>
+                    </div>
+                </text>
+                );
+            })
+            .OnContentReady($"function(e) {{ return thresholdOptionsContentReady({Model.TemplateId}, e); }}"))
+</div>
+<br/>
+<br />
+@(
+    Html.DevExtreme().DataGrid<ThresholdViewModel>()
+        .ID("thresholdGrid")
+        .DataSource(options =>
+            options.Mvc()
+            .Controller("AlarmTemplate")
+            .LoadAction("LoadThresholds")
+            .InsertAction("CreateThreshold")
+            .UpdateAction("UpdateThreshold")
+            .DeleteAction("DeleteThreshold")
+            .Key("Id")
+            .OnBeforeSend($"function(e, d) {{ thresholdBeforeSend(e, d, 0); }}")
+            .LoadParams(new { Id = Model.TemplateId })
+        )
+        .RemoteOperations(true)
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.Units).DataField("Units").Visible(false).FormItem(i => i.Visible(false)); // Data only
+
+            columns.AddFor(m => m.AlarmType)
+                .Caption(Localizer["Type"].Value)
+                .Lookup(lookup =>
+                {
+                    lookup.DataSource(
+                        Html.GetEnumSelectList<AlarmType>()
+                        .Where(t => t.Value == "2" || t.Value == "3" || t.Value == "5" || t.Value == "6")
+                        .Select(i => new
+                        {
+                            Value = int.Parse(i.Value),
+                            Text = int.Parse(i.Value) switch {
+                                2 => Localizer["Rising"].Value,
+                                3 => Localizer["Falling"].Value,
+                                5 => Localizer["Communication"].Value,
+                                6 => Localizer["RateOfChange"].Value,
+                                _ => Localizer["Communication"].Value
+                            }
+                        }));
+                    lookup.ValueExpr("Value");
+                    lookup.DisplayExpr("Text");
+                })
+                .CellTemplate(new JS("displayLimitType"))
+                .SetCellValue("setThresholdAlarmType");
+
+            columns.AddFor(m => m.DisplayLimit)
+                .Caption(Localizer["Limit"].Value)
+                .CalculateSortValue("Limit")
+                .FormItem(i => i.Editor(e => e.NumberBox().ShowSpinButtons(true)))
+                .CellTemplate(new JS("function(e, c){ e.append(c.data.DisplayLimitText); }"));
+
+
+            columns.AddFor(m => m.RateOfChangeTime)
+                .Caption(Localizer["RateOfChangeTime"].Value)
+                .Visible(false)
+                .AllowEditing(true)
+                .EditCellTemplate(
+                            @<text>
+                                <div class="time-span-edit">
+                                    <div class="time-span-hours">
+                                        @(Html.DevExtreme().NumberBox()
+                                            .Value(new JS("data.RateOfChangeTime ? data.RateOfChangeTime.hours : 0"))
+                                            .ShowSpinButtons(true).Max(23).Min(0).Format("00")
+                                            .OnValueChanged("function(e) { timeSpanChange('hour', setValue, e, data.RateOfChangeTime); }"))
+                                    </div>
+                                    <span class="time-splitter">:</span>
+                                    <div class="time-span-minutes">
+                                        @(Html.DevExtreme().NumberBox()
+                                            .Value(new JS("data.RateOfChangeTime ? data.RateOfChangeTime.minutes : 10"))
+                                            .ShowSpinButtons(true).Max(59).Min(0).Format("00")
+                                            .OnValueChanged("function(e) { timeSpanChange('minute', setValue, e, data.RateOfChangeTime); }"))
+                                    </div>
+                                    <span class="time-splitter">:</span>
+                                    <div class="time-span-seconds">
+                                        @(Html.DevExtreme().NumberBox()
+                                            .Value(new JS("data.RateOfChangeTime ? data.RateOfChangeTime.seconds : 0"))
+                                            .ShowSpinButtons(true).Max(59).Min(0).Format("00")
+                                            .OnValueChanged("function(e) { timeSpanChange('second', setValue, e, data.RateOfChangeTime); }"))
+                                    </div>
+                                </div>
+                            </text>
+                        );
+
+
+            columns.AddFor(m => m.AlarmSeverity)
+                    .Caption(Localizer["Severity"].Value)
+                    .CellTemplate(new JS("severityCellTemplate"))
+                    .SetCellValue("setColourFromSeverity")
+                    .EditCellTemplate(
+                        @<text>
+                            <span id="severitySliderLabel">Unknown</span>
+                            @(Html.DevExtreme()
+                                .Slider()
+                                .ID("severitySlider")
+                                .Value(new JS("initialiseSeverityValue(data.AlarmSeverity)"))
+                                .Min(1)
+                                .Max(4)
+                                .Step(1)
+                                .OnValueChanged("function(e) { severityChanged(e, setValue); }")
+                                .OnContentReady("initialiseSeverity")
+                                .Label(l => l.Visible(false).Format(new JS("getSeveritySliderLabel"))
+                                .Position(VerticalEdge.Bottom))
+                                .Tooltip(t => {
+                                    t.Enabled(false);
+                                    t.Format(new JS("getSeveritySliderLabel"));
+                                    t.Position(VerticalEdge.Bottom);
+                                    t.ShowMode(SliderTooltipShowMode.Always);
+                                })
+                                )
+                        </text>
+                    );
+
+            columns.AddFor(m => m.Colour)
+                    .Caption(Localizer["Colour"].Value)
+                    .CellTemplate(@<text><div class="colour-block" style="background-color:[%- data.Colour %]">[%- data.Colour %]</div></text>)
+                        .EditCellTemplate(
+                        @<text>
+                            @(Html.DevExtreme().ColorBox()
+                            .Value(new JS("initialiseColour(setValue, data.Colour)"))
+                            .OnValueChanged("function (e) { setColour(setValue, e); }"))
+                            </text>
+                        );
+
+
+            columns.AddFor(m => m.Delay)
+                    .Caption(Localizer["Delay"].Value)
+                    .Visible(false)
+                    .AllowEditing(true)
+                    .EditCellTemplate(
+                        @<text>
+                            <div class="time-span-edit">
+                                <div id="spanHelp" class="form-item-help">
+                                    <partial name="Icons/Help" />
+                                    @(Html.DevExtreme().Tooltip()
+                                            .Target("#spanHelp")
+                                            .ShowEvent("mouseenter")
+                                            .HideEvent("mouseleave")
+                                            .Position(Position.Right)
+                                            .ContentTemplate(Localizer["DelayHelp"].Value))
+                                    </div>
+                                    <div class="time-span-minutes">
+                                        @(Html.DevExtreme().NumberBox()
+                                            .ID("templateDelayMinutes")
+                                            .Value(new JS("data.Delay ? data.Delay.minutes : 0"))
+                                            .ReadOnly(!canConfigure)
+                                            .ShowSpinButtons(true).Max(59).Min(0).Format("00")
+                                            .OnValueChanged("function(e) { timeSpanChange('minute', setValue, e, data.Delay); }"))
+                                    </div>
+                                    <span class="time-splitter">:</span>
+                                    <div class="time-span-seconds">
+                                        @(Html.DevExtreme().NumberBox()
+                                            .ID("templateDelaySeconds")
+                                            .Value(new JS("data.Delay ? data.Delay.seconds : 0"))
+                                            .ReadOnly(!canConfigure)
+                                            .ShowSpinButtons(true).Max(59).Min(0).Format("00")
+                                            .OnValueChanged("function(e) { timeSpanChange('second', setValue, e, data.Delay); }"))
+                                    </div>
+                                </div>
+                            </text>
+                           );
+
+            columns.AddFor(m => m.RequiresAcknowledgement)
+                .Caption(Localizer["RequiresAcknowledgement"].Value)
+                .DataType(GridColumnDataType.Boolean);
+
+
+            columns.AddFor(m => m.HardwareOutput)
+                    .Caption(Localizer["HardwareOutput"].Value)
+                    .DataType(GridColumnDataType.Boolean);
+
+
+            columns.Add()
+                .Type(GridCommandColumnType.Buttons)
+                .Buttons(b =>
+                {
+                    b.Add().OnClick($"function(e){{ showNotificationPopup(e, '{Localizer["NotificationTitle"].Value}'); }}").Text(Localizer["Notification"].Value);
+                    b.Add().Name(GridColumnButtonName.Edit).Text(Localizer["Edit"].Value);
+                    b.Add().Name(GridColumnButtonName.Delete).Text(Localizer["Delete"].Value);
+                });
+        })
+        .Editing(options =>
+        {
+            options.Form(f => f.CustomizeItem($"function(e) {{ customiseThresholdElement(e, '{Localizer["Minutes"].SafeValue()}', '{Model.LimitFormat}', {Model.LimitStep}); }}"));
+            options.AllowAdding(canConfigure);
+            options.AllowDeleting(canConfigure);
+            options.AllowUpdating(canConfigure);
+            options.ConfirmDelete(true);
+            options.Texts(x => x.ConfirmDeleteMessage(Localizer["DeleteThresholdMessage"].SafeValue()).ConfirmDeleteTitle(Localizer["DeleteThresholdTitle"].SafeValue()));
+            options.Mode(GridEditMode.Form);
+        })
+        .Toolbar(toolbar =>
+        {
+            toolbar.Items(i =>
+            {
+                i.Add().Location(ToolbarItemLocation.Before).Text(Localizer["Thresholds"].Value);
+                i.Add().Name(DataGridToolbarItem.AddRowButton)
+                .Widget(w => w.Button().Text(Localizer["AddThreshold"].Value).Hint(Localizer["AddThreshold"].Value).Icon("../images/icons/plus.svg"))
+                .Location(ToolbarItemLocation.After).Option("showText", "always");
+            });
+        })
+        .OnInitNewRow("newThreshold")
+        .OnEditingStart("thresholdEditStart")
+        .OnRowUpdating("onThresholdRowUpdating")
+    )
+
+@(Html.DevExtreme().Popup()
+    .ID("notificationPopup")
+    .ShowTitle(true)
+    .Visible(false)
+    .DragEnabled(false)
+    .CloseOnOutsideClick(false)
+    .ShowCloseButton(true)
+    .MaxWidth(600)
+    .Height(700)
+    .Shading(true)
+    .OnShown("notificationShown")
+    .OnHiding("notificationHidden")
+    .Content("<div id='notificationPlaceholder'>Loading... Please Wait.</div>")
+    .ToolbarItems(i =>
+    {
+        if(canConfigure)
+        {
+            i.Add().Toolbar(Toolbar.Bottom)
+                .Location(ToolbarItemLocation.After)
+                .Widget(w => w.Button()
+                .Text(Localizer["Save"].Value)
+                .OnClick("saveNotifications"));
+
+            i.Add().Toolbar(Toolbar.Bottom)
+               .Location(ToolbarItemLocation.After)
+               .Widget(w => w.Button()
+               .Text(Localizer["SaveToAll"].Value)
+               .OnClick("saveAndCopyNotifications"));
+        }
+
+        i.Add().Toolbar(Toolbar.Bottom)
+            .Location(ToolbarItemLocation.After)
+            .Widget(w => w.Button()
+            .Text(Localizer["Cancel"].Value)
+            .OnClick("function() { $('#notificationPopup').dxPopup('hide'); }"));
+    })
+)
+
+<div class="limit-lookup d-none">
+    <div id="icon-1">
+        <div class="d-flex flex-row">
+            <div class="mr-2 alarm-type-icon alarm-state"><partial name="Icons/AlarmSystem" /></div>
+            <div class="h-100 ">@Localizer["SystemError"].Value</div>
+        </div>
+    </div>
+    <div id="icon-2">
+        <div class="d-flex flex-row">
+            <div class="mr-2 alarm-type-icon alarm-state"><partial name="Icons/AlarmRising" /></div>
+            <div class="h-100 ">@Localizer["RisingLimit"].Value</div>
+        </div>
+    </div>
+    <div id="icon-3">
+        <div class="d-flex flex-row">
+            <div class="mr-2 alarm-type-icon alarm-state"><partial name="Icons/AlarmFalling" /></div>
+            <div class="h-100 ">@Localizer["FallingLimit"].Value</div>
+        </div>
+    </div>
+    <div id="icon-4">
+        <div class="d-flex flex-row">
+            <div class="mr-2 alarm-type-icon alarm-state"><partial name="Icons/AlarmBattery" /></div>
+            <div class="h-100 ">@Localizer["LowBattery"].Value</div>
+        </div>
+    </div>
+    <div id="icon-5">
+        <div class="d-flex flex-row">
+            <div class="mr-2 alarm-type-icon alarm-state"><partial name="Icons/AlarmElapsed" /></div>
+            <div class="h-100 ">@Localizer["Communication"].Value</div>
+        </div>
+    </div>
+    <div id="icon-6">
+        <div class="d-flex flex-row">
+            <div class="mr-2 alarm-type-icon alarm-state"><partial name="Icons/AlarmRateChange" /></div>
+            <div class="h-100 ">@Localizer["RateOfChange"].Value</div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function getSeverityLabel(level) {
+        switch (level) {
+            case 4: return '@Localizer["Warning"].Value';
+            case 3: return '@Localizer["Minor"].Value';
+            case 2: return '@Localizer["Major"].Value';
+            default: return '@Localizer["Critical"].Value';
+        }
+    }
+
+    function getSeverityColour(level) {
+         switch (level) {
+             case 4: return '#FFE650';
+             case 3: return '#EBA729';
+             case 2: return '#FF6000';
+             default: return '#FF0000';
+        }
+    }
+
+</script>

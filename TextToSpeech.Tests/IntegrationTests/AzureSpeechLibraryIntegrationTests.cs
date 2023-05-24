@@ -10,9 +10,9 @@ namespace TextToSpeech.Tests.IntegrationTests
     {
         private IAzureSpeechLibrary _azureSpeechLibrary;
 
-        private static readonly string azure_api_key = "7de2c1fecaf441b0a340ebdf24a36b36";
-        private static readonly string azure_region = "westeurope";
-        private static readonly string azure_container_storage_connection_string = "DefaultEndpointsProtocol=https;AccountName=satexttospeech;AccountKey=GW/U21VRyWyOGaZJGrSQpj2sL/215Vpp+uKsKCZNR0TqlWZwh0v2KQnEVvb8z1c6a2y9bncn7SI9+AStP/w9HQ==;EndpointSuffix=core.windows.net";
+        private static readonly string azure_api_key = "xxx";
+        private static readonly string azure_region = "xxx";
+        private static readonly string azure_container_storage_connection_string = "xxx";
 
         [SetUp]
         public void SetUp() { }

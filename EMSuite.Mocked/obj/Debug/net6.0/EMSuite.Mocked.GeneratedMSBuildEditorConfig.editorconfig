@@ -16,6 +16,18 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\phia\Desktop\EMSuite - Bachelor\EMSuite.Mocked
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/phia/Desktop/EMSuite - Bachelor/EMSuite.Mocked/Views/AlarmTemplate/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWxhcm1UZW1wbGF0ZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/phia/Desktop/EMSuite - Bachelor/EMSuite.Mocked/Views/AlarmTemplate/_NotificationPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWxhcm1UZW1wbGF0ZVxfTm90aWZpY2F0aW9uUGFydGlhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/phia/Desktop/EMSuite - Bachelor/EMSuite.Mocked/Views/AlarmTemplate/_ThresholdsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWxhcm1UZW1wbGF0ZVxfVGhyZXNob2xkc1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/phia/Desktop/EMSuite - Bachelor/EMSuite.Mocked/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

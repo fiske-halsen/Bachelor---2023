@@ -1,0 +1,125 @@
+﻿@using EMSuite.Common.ViewModels
+
+@inject IViewLocalizer Localizer
+@inject IAuthorizationService Auth
+
+@{
+    var canConfigure = (await Auth.AuthorizeAsync(User, Permissions.AlarmTemplate.Configure)).Succeeded;
+    var viewAlarmTemplate = User.HasClaim(x => x.Value == Permissions.AlarmTemplate.View);
+    var viewActioncards = User.HasClaim(x => x.Value == Permissions.ActionCard.View);
+}
+
+<ul class="nav ems-pills">
+    @if (viewAlarmTemplate)
+    {
+        <li class="nav-item">
+            <a asp-controller="AlarmTemplate" asp-action="Index" class="nav-link active">@Localizer["AlarmTemplate"]</a>
+        </li>
+    }
+    @if (viewActioncards)
+    {
+        <li class="nav-item">
+            <a asp-controller="ActionCard" asp-action="Index" class="nav-link">@Localizer["AlarmActionCards"]</a>
+        </li>
+    }
+</ul>
+</br>
+
+<div class="row">
+    <div class="col">
+        @(Html.DevExtreme().Toolbar()
+            .ID("templateToolbar")
+            .Items(items =>
+            {
+                items.Add().Text(Localizer["Title"].Value).Location(ToolbarItemLocation.Before);
+
+                if (canConfigure)
+                {
+                    items.Add().Widget(w => w.Button().Icon("../images/icons/plus.svg").Text(Localizer["Create"].Value).Hint(Localizer["Create"].Value).OnClick($"function() {{ showTemplatePopup('{Localizer["NewTemplate"].SafeValue()}', false, false); }}")).Location(ToolbarItemLocation.After);
+                    items.Add().Widget(w => w.Button().Icon("../images/icons/Edit.svg").Text(Localizer["Edit"].Value).Hint(Localizer["Edit"].Value).ID("editTemplateButton").OnClick($"function() {{ showTemplatePopup('{Localizer["EditTemplate"].SafeValue()}', true, false); }}")).Location(ToolbarItemLocation.After);
+                    items.Add().Widget(w => w.Button().Icon("../images/icons/CopyIcon.svg").Text(Localizer["CopyButton"].Value).Hint(Localizer["CopyButton"].Value).ID("copyTemplateButton").OnClick($"function() {{ showTemplatePopup('{Localizer["CopyTemplate"].SafeValue()}', true, true); }}")).Location(ToolbarItemLocation.After);
+                    items.Add().Widget(w => w.Button().Icon("../images/icons/Delete.svg").Text(Localizer["Delete"].Value).Hint(Localizer["Delete"].Value).ID("deleteTemplateButton").OnClick($"function() {{ deleteAlarmTemplate('{Localizer["ConfirmDelete"].SafeValue()}','{Localizer["DeleteTemplate"].SafeValue()}', '{Localizer["DeleteTemplateInfomationMessage"].SafeValue()}','{Localizer["DeleteTemplateInfomationCaption"].SafeValue()}'); }}")).Location(ToolbarItemLocation.After);
+                }
+            }))
+    </div>
+</div>
+
+<div class="flex-grow-1 row mt-3">
+    <div class="col-auto template-left">
+        @(Html.DevExtreme().List()
+            .ID("alarmTemplateList")
+            .SearchEnabled(true)
+            .SearchExpr("Name", "Description")
+            .SelectionMode(ListSelectionMode.Single)
+            .DataSource(ds => ds.Mvc().Controller("AlarmTemplate").LoadAction("LoadChannelTemplates").Key("Id"))
+            .OnSelectionChanged("templateSelected")
+            .OnContentReady("initialised")
+            .ItemTemplate(
+                @<text>
+                    <div class="template-entry">
+                        <div class="template-name"><strong>[%- Name %]</strong></div>
+                        <div class="template-description">[%- Description %]</div>
+                    </div>
+                </text>)
+        )
+    </div>
+    <div class="col">
+
+        <h4 id="templateName" data-no-items="@Localizer["TitleNoItemsText"].Value">Loading</h4>
+        <span id="templateDescription" data-no-items="@Localizer["DescriptionNoItemsText"].Value" class="mb-3 d-inline-block">
+            Please Wait...
+        </span>
+
+        @(Html.DevExtreme().Tabs()
+                .ID("templateTabs")
+                .OnInitialized("tabsInitialised")
+                .DataSource(new dynamic[] {
+                    new { id = 1,  text = Localizer["Thresholds"].Value, icon = "../images/icons/thresholds.svg" },
+                    new { id = 2, text = Localizer["Channels"].Value, icon = "../images/icons/channels.svg" },
+                    new { id = 6, text = Localizer["AcknowledgeText"].Value, icon = "../images/icons/AcknowledgementText.svg" },
+                    new { id = 5, text = Localizer["HardwareSMS"].Value, icon = "../images/icons/notification.svg" },
+                    new { id = 4, text = Localizer["Suppression"].Value, icon = "../images/icons/suppression.svg" }
+                })
+                .OnItemClick("tabSelected"))
+
+        <div id="tabularContent" />
+    </div>
+</div>
+
+
+@(Html.DevExtreme().Popup()
+    .ID("templatePopup")
+    .ShowTitle(true)
+    .Visible(false)
+    .DragEnabled(false)
+    .CloseOnOutsideClick(false)
+    .ShowCloseButton(true)
+    .MaxWidth(600)
+    .Shading(true)
+    .OnShown("templateEditShown")
+    .OnHiding("templateEditHidden")
+    .Content("<div id='templateEditPlaceholder'>Loading... Please Wait.</div>")
+    .ToolbarItems(i =>
+    {
+        i.Add().Toolbar(Toolbar.Bottom)
+            .Location(ToolbarItemLocation.After)
+            .Widget(w => w.Button()
+            .Text(Localizer["Save"].Value)
+            .OnClick("saveTemplate"));
+
+        i.Add().Toolbar(Toolbar.Bottom)
+            .Location(ToolbarItemLocation.After)
+            .Widget(w => w.Button()
+            .Text(Localizer["Cancel"].Value)
+            .OnClick("function() { $('#templatePopup').dxPopup('hide'); isEdit = false; isCreate = false; isCopy = false; }"));
+    })
+)
+
+@section Style {
+    <link rel="stylesheet" href="~/css/alarm/alarm.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/alarm/template.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/alarm-template.js"></script>
+}

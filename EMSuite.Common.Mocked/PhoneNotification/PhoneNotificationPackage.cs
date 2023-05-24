@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EMSuite.Common.PhoneNotification
+namespace EMSuite.Common.Mocked.PhoneNotification
 {
     public class PhoneNotificationPackage
     {
